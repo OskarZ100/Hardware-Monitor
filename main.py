@@ -2,11 +2,72 @@ import wmi
 import psutil
 import sys
 import os
+#for update function
+import threading
+import time
+import pythoncom
+
+
+#       -Classes setup-
+class CPU:
+
+    def __init__(self, cpu_list):
+        self.amount = len(cpu_list)
+        self.cpu_information = cpu_list
+        self.names = self.setup_names()
+
+
+    # Returns names of all CPUs on the device
+    def setup_names(self):
+        names_of_cpus = []
+
+        for cpus in self.cpu_information:
+            names_of_cpus.append(cpus.Name)
+
+        return names_of_cpus
+
+    # Update our values 
+    def update_values(self,cpu_list):
+        self.cpu_information = cpu_list
+
+    # Returns a basic summary of CPU info to display to user in Gen info func
+    def string_general_info(self):
+        final_string = ""
+
+        if self.amount == 1:
+            final_string += "CPU: " + self.names[0] + "\n"
+            final_string += "\t USAGE: " + str(self.cpu_information[0].LoadPercentage) + "%" + "\n\n"
+        else:
+            count_of_cpus = 1
+            for name in self.names:
+                final_string += "CPU" + str(count_of_cpus) + ": " + name + "\n\n"
+                final_string += "\t USAGE: " + str(self.cpu_information[count_of_cpus-1].LoadPercentage) + "%" + "\n\n"
+                count_of_cpus += 1
+
+        return final_string
+
 
 
 #     -Variable declaration-
+
+#   WMI variables
+cpu_list = wmi.WMI().Win32_Processor()
+gpu_list = wmi.WMI().Win32_VideoController()
+ram_list = wmi.WMI().Win32_PhysicalMemory()
+drive_list = wmi.WMI().Win32_DiskDrive()
+disk_list = wmi.WMI().Win32_LogicalDisk()
+
+#   Static computer vars
+my_cpu = CPU(cpu_list)
+
 #   Loop control
 running_script = True
+
+
+
+
+
+    
 
 #       -Function Def-
 
@@ -50,10 +111,24 @@ def display_project_info():
     "get internship or co-op\n\n" \
     "press enter to go back to menu!\n")
     input()
+    os.system("cls")
     return
 
 # Display a general summary of the users hardware and specs
 def display_general_hardware_info():
+    print("\t\t -General Hardware Info-\n" \
+    + my_cpu.string_general_info() +
+    "GPU: " + "NAME HERE\n" \
+    "\t USAGE: " + "NUMBBBERRS\n\n" \
+    "RAM\n" \
+    "\t AVAILABLE: " + "HERE\n" \
+    "\t USED: " + "amount (percent)\n\n" \
+    "STORAGE\n" \
+    "\t USED\\TOTAL: " + "10GB\\100GB ex")
+    #ADD WARNINGS LIKE MAYBE stuff where its like ok this is weirdly high or overused at bottom
+    print("\n\n\n Press enter to go back to menu!\n")
+    input()
+    os.system("cls")
     return
 
 # Display CPU info
@@ -72,8 +147,15 @@ def display_ram_info():
 def display_storage_info():
     return
 
+# Update function to maintain updated values
+def update():
+    pythoncom.CoInitialize() #WIM auto handles like the setup in main thread but need to have COM access in this thread so this fixes that
+    while True:
+        my_cpu.update_values(wmi.WMI().Win32_Processor())
+        time.sleep(1)
 
 #           -Script Startup-
+threading.Thread(target=update, daemon=True).start()
 print("Welcome to the Hardware Monitor V1 by Oskaras Zincenko")
 print("Select an option from the menu to begin\n")
 
