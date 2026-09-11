@@ -9,26 +9,27 @@ import pythoncom
 
 
 #       -Classes setup-
-class CPU:
-
-    def __init__(self, cpu_list):
-        self.amount = len(cpu_list)
-        self.cpu_information = cpu_list
-        self.names = self.setup_names()
-
-
-    # Returns names of all CPUs on the device
+# A lot of repetition happening so made subclasses 
+class Hardware:
+    def __init__(self, h_list):
+            self.amount = len(h_list)
+            self.information = h_list
+            self.names = self.setup_names()
+    
     def setup_names(self):
-        names_of_cpus = []
+        names = []
+    
+        for items in self.information:
+            names.append(items.Name)
+    
+        return names
 
-        for cpus in self.cpu_information:
-            names_of_cpus.append(cpus.Name)
+    def update_values(self,hardware_list):
+            self.information = hardware_list
 
-        return names_of_cpus
 
-    # Update our values 
-    def update_values(self,cpu_list):
-        self.cpu_information = cpu_list
+class CPU(Hardware):
+
 
     # Returns a basic summary of CPU info to display to user in Gen info func
     def string_general_info(self):
@@ -36,50 +37,56 @@ class CPU:
 
         if self.amount == 1:
             final_string += "CPU: " + self.names[0] + "\n"
-            final_string += "\t USAGE: " + str(self.cpu_information[0].LoadPercentage) + "%\n\n"
+            final_string += "\t USAGE: " + str(self.information[0].LoadPercentage) + "%\n\n"
         else:
             count_of_cpus = 1
             for name in self.names:
                 final_string += "CPU " + str(count_of_cpus) + ": " + name + "\n\n"
-                final_string += "\t USAGE: " + str(self.cpu_information[count_of_cpus-1].LoadPercentage) + "%\n\n"
+                final_string += "\t USAGE: " + str(self.information[count_of_cpus-1].LoadPercentage) + "%\n\n"
                 count_of_cpus += 1
 
         return final_string
 
 # Follow the same structure as the CPU class basically
-class GPU:
-
-    def __init__(self, gpu_list):
-        self.amount = len(gpu_list)
-        self.gpu_information = gpu_list
-        self.names = self.setup_names()
-
-    def setup_names(self):
-        names_of_gpus = []
-
-        for gpus in self.gpu_information:
-            names_of_gpus.append(gpus.Name)
-
-        return names_of_gpus
-
-    def update_values(self,gpu_list):
-        self.gpu_information = gpu_list
+class GPU(Hardware):
 
     def string_general_info(self):
         final_string = ""
 
         if self.amount == 1:
             final_string += "GPU: " + self.names[0] + "\n"
-            final_string += "\t STATUS: " + str(self.gpu_information[0].Status) + "\n\n"
+            final_string += "\t STATUS: " + str(self.information[0].Status) + "\n\n"
         else:
             count_for_gpus = 1
             for name in self.names:
                 final_string += "GPU " + str(count_for_gpus) + ": " + name + "\n\n"
-                final_string += "\t STATUS: " + str(self.gpu_information[count_for_gpus-1].Status) + "\n\n"
+                final_string += "\t STATUS: " + str(self.information[count_for_gpus-1].Status) + "\n\n"
                 count_for_gpus += 1
 
         return final_string
-    
+
+class RAM(Hardware):
+
+    def __init__(self, h_list):
+        super().__init__(h_list)
+
+        self.gb_capacity = self.get_capacity()
+
+    def get_capacity(self):
+        ram_capacity = []
+        for item in self.information:
+            ram_capacity.append(int(item.Capacity) / (1024 ** 3))
+
+        return ram_capacity
+
+    def string_general_info(self):
+        final_string = "RAM: \n OVERALL USAGE: " + str(psutil.virtual_memory().percent) + "%\n"
+
+        count_for_ram = 1
+        for item in self.information:
+            final_string += "\t STICK " + str(count_for_ram) + ":\n\t\t CAPACITY: " + str(self.gb_capacity[count_for_ram-1]) + "\n\n"
+            count_for_ram += 1
+        return final_string
 
 #     -Variable declaration-
 
@@ -93,6 +100,7 @@ disk_list = wmi.WMI().Win32_LogicalDisk()
 #   Static computer vars
 my_cpu = CPU(cpu_list)
 my_gpu = GPU(gpu_list)
+my_ram = RAM(ram_list)
 
 #   Loop control
 running_script = True
@@ -153,9 +161,7 @@ def display_general_hardware_info():
     print("\t\t -General Hardware Info-\n" \
     + my_cpu.string_general_info() +
     my_gpu.string_general_info() + \
-    "RAM\n" \
-    "\t AVAILABLE: " + "HERE\n" \
-    "\t USED: " + "amount (percent)\n\n" \
+    my_ram.string_general_info() + \
     "STORAGE\n" \
     "\t USED\\TOTAL: " + "10GB\\100GB ex")
     #ADD WARNINGS LIKE MAYBE stuff where its like ok this is weirdly high or overused at bottom
@@ -189,26 +195,29 @@ def update():
         time.sleep(1)
 
 #           -Script Startup-
-threading.Thread(target=update, daemon=True).start()
-print("Welcome to the Hardware Monitor V1 by Oskaras Zincenko")
-print("Select an option from the menu to begin\n")
+def main():
+    threading.Thread(target=update, daemon=True).start()
+    print("Welcome to the Hardware Monitor V1 by Oskaras Zincenko")
+    print("Select an option from the menu to begin\n")
 
-#           -Loop for menu-
-while running_script:
-    print("\t\t---- MENU ----\n" \
-          "0. Info about project\n" \
-          "1. General Hardware info\n" \
-          "2. CPU info\n" \
-          "3. GPU info\n" \
-          "4. RAM info\n" \
-          "5. Storage info\n" \
-          "6. clear screen\n" \
-          "7. exit\n" \
-          "\t\t--------------")
+    #           -Loop for menu-
+    while running_script:
+        print("\t\t---- MENU ----\n" \
+            "0. Info about project\n" \
+            "1. General Hardware info\n" \
+            "2. CPU info\n" \
+            "3. GPU info\n" \
+            "4. RAM info\n" \
+            "5. Storage info\n" \
+            "6. clear screen\n" \
+            "7. exit\n" \
+            "\t\t--------------")
 
-    user_input = input()
-    direct_user(user_input)
+        user_input = input()
+        direct_user(user_input)
 
+if __name__ == "__main__":
+    main()
 
 
 
