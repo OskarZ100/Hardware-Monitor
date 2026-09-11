@@ -36,17 +36,50 @@ class CPU:
 
         if self.amount == 1:
             final_string += "CPU: " + self.names[0] + "\n"
-            final_string += "\t USAGE: " + str(self.cpu_information[0].LoadPercentage) + "%" + "\n\n"
+            final_string += "\t USAGE: " + str(self.cpu_information[0].LoadPercentage) + "%\n\n"
         else:
             count_of_cpus = 1
             for name in self.names:
-                final_string += "CPU" + str(count_of_cpus) + ": " + name + "\n\n"
-                final_string += "\t USAGE: " + str(self.cpu_information[count_of_cpus-1].LoadPercentage) + "%" + "\n\n"
+                final_string += "CPU " + str(count_of_cpus) + ": " + name + "\n\n"
+                final_string += "\t USAGE: " + str(self.cpu_information[count_of_cpus-1].LoadPercentage) + "%\n\n"
                 count_of_cpus += 1
 
         return final_string
 
+# Follow the same structure as the CPU class basically
+class GPU:
 
+    def __init__(self, gpu_list):
+        self.amount = len(gpu_list)
+        self.gpu_information = gpu_list
+        self.names = self.setup_names()
+
+    def setup_names(self):
+        names_of_gpus = []
+
+        for gpus in self.gpu_information:
+            names_of_gpus.append(gpus.Name)
+
+        return names_of_gpus
+
+    def update_values(self,gpu_list):
+        self.gpu_information = gpu_list
+
+    def string_general_info(self):
+        final_string = ""
+
+        if self.amount == 1:
+            final_string += "GPU: " + self.names[0] + "\n"
+            final_string += "\t STATUS: " + str(self.gpu_information[0].Status) + "\n\n"
+        else:
+            count_for_gpus = 1
+            for name in self.names:
+                final_string += "GPU " + str(count_for_gpus) + ": " + name + "\n\n"
+                final_string += "\t STATUS: " + str(self.gpu_information[count_for_gpus-1].Status) + "\n\n"
+                count_for_gpus += 1
+
+        return final_string
+    
 
 #     -Variable declaration-
 
@@ -59,6 +92,7 @@ disk_list = wmi.WMI().Win32_LogicalDisk()
 
 #   Static computer vars
 my_cpu = CPU(cpu_list)
+my_gpu = GPU(gpu_list)
 
 #   Loop control
 running_script = True
@@ -118,8 +152,7 @@ def display_project_info():
 def display_general_hardware_info():
     print("\t\t -General Hardware Info-\n" \
     + my_cpu.string_general_info() +
-    "GPU: " + "NAME HERE\n" \
-    "\t USAGE: " + "NUMBBBERRS\n\n" \
+    my_gpu.string_general_info() + \
     "RAM\n" \
     "\t AVAILABLE: " + "HERE\n" \
     "\t USED: " + "amount (percent)\n\n" \
@@ -152,6 +185,7 @@ def update():
     pythoncom.CoInitialize() #WIM auto handles like the setup in main thread but need to have COM access in this thread so this fixes that
     while True:
         my_cpu.update_values(wmi.WMI().Win32_Processor())
+        my_gpu.update_values(wmi.WMI().Win32_VideoController())
         time.sleep(1)
 
 #           -Script Startup-
