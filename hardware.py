@@ -81,3 +81,29 @@ class RAM(Hardware):
             final_string += "\t STICK " + str(count_for_ram) + ":\n\t\t CAPACITY: " + str(self.gb_capacity[count_for_ram-1]) + "\n\n"
             count_for_ram += 1
         return final_string
+
+class Storage:
+
+    def __init__(self, hard_list, logic_list):
+        self.physical_hardware = hard_list
+        self.logical_hardware = logic_list
+
+
+    def string_general_info(self):
+        final_string = "STORAGE: \n"
+
+        count = 1
+        for item in self.physical_hardware:
+            final_string += "\t Drive "+ str(count) + " :" + item.Model + "\n"
+            final_string += "\t\t Capacity: " + str(round(((int(item.Size)) / (1000 ** 3)), 2)) + " GB\n"
+            final_string += "\t\t Free Space: " + self.free_space_return(count-1) + "\n"
+            final_string += "\t\t Media Type: " + item.MediaType + "\n"
+            final_string += "\t\t Interface: " + item.InterfaceType + "\n\n"
+            count += 1
+        return final_string
+
+    def free_space_return(self,item_num):
+        #Use the disk partition WMI class for the object
+        #Using the disk index feature should allow for matching and finding the partitions associated with the physucal drive
+        #try this approach first 
+        return "placeholder"

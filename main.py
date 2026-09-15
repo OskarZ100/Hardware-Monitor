@@ -10,7 +10,7 @@ import time
 import pythoncom
 
 # My classes 
-from hardware import CPU, GPU, RAM
+from hardware import CPU, GPU, RAM, Storage
 
 
 
@@ -27,6 +27,8 @@ disk_list = wmi.WMI().Win32_LogicalDisk()
 my_cpu = CPU(cpu_list)
 my_gpu = GPU(gpu_list)
 my_ram = RAM(ram_list)
+
+my_storage = Storage(drive_list, disk_list)
 
 #   Loop control
 running_script = True
@@ -83,8 +85,7 @@ def display_general_hardware_info():
     + my_cpu.string_general_info() +
     my_gpu.string_general_info() + \
     my_ram.string_general_info() + \
-    "STORAGE\n" \
-    "\t USED\\TOTAL: " + "10GB\\100GB ex")
+    my_storage.string_general_info()) 
     #ADD WARNINGS LIKE MAYBE stuff where its like ok this is weirdly high or overused at bottom
     print("\n\n\n Press enter to go back to menu!\n")
     input()
