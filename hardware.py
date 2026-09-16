@@ -91,16 +91,30 @@ class Storage:
 
     def string_general_info(self):
         final_string = "STORAGE: \n"
+        Capacity = ""
+
+        # Some systems may return NONE for the item.Size so i will use a try catch to help out 
+        # This is the same with MediaType and InterfaceType but those can use a simple str wrap as we are not calculating anything
+        try:
+            Capacity = str(round(((int(item.Size)) / (1000 ** 3)), 2))
+        except:
+            print("\n\n USERS DRIVE DOES NOT HAVE A DISPLAYABLE CAPACITY")
+            Capacity = "NONE"
 
         count = 1
         for item in self.physical_hardware:
             final_string += "\t Drive "+ str(count) + " :" + item.Model + "\n"
-            final_string += "\t\t Capacity: " + str(round(((int(item.Size)) / (1000 ** 3)), 2)) + " GB\n"
+            final_string += "\t\t Capacity: " + Capacity  + " GB\n"
             final_string += "\t\t Free Space: " + self.free_space_return(count-1) + "\n"
-            final_string += "\t\t Media Type: " + item.MediaType + "\n"
-            final_string += "\t\t Interface: " + item.InterfaceType + "\n\n"
+            final_string += "\t\t Media Type: " + str(item.MediaType) + "\n"
+            final_string += "\t\t Interface: " + str(item.InterfaceType) + "\n\n"
             count += 1
         return final_string
+
+    # We need the update values function for storage unlike RAM
+    def update_values(self,hard_list,logic_list):
+        self.physical_hardware = hard_list
+        self.logical_hardware = logic_list
 
     def free_space_return(self,item_num):
         #Use the disk partition WMI class for the object

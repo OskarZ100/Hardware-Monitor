@@ -114,6 +114,7 @@ def update():
     while True:
         my_cpu.update_values(wmi.WMI().Win32_Processor())
         my_gpu.update_values(wmi.WMI().Win32_VideoController())
+        my_storage.update_values(wmi.WMI().Win32_DiskDrive(),wmi.WMI().Win32_LogicalDisk())
         time.sleep(1)
 
 #           -Script Startup-
