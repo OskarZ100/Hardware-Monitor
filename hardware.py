@@ -93,16 +93,17 @@ class Storage:
         final_string = "STORAGE: \n"
         Capacity = ""
 
-        # Some systems may return NONE for the item.Size so i will use a try catch to help out 
-        # This is the same with MediaType and InterfaceType but those can use a simple str wrap as we are not calculating anything
-        try:
-            Capacity = str(round(((int(item.Size)) / (1000 ** 3)), 2))
-        except:
-            print("\n\n USERS DRIVE DOES NOT HAVE A DISPLAYABLE CAPACITY")
-            Capacity = "NONE"
-
+        
         count = 1
         for item in self.physical_hardware:
+            # Some systems may return NONE for the item.Size so i will use a try catch to help out 
+            # This is the same with MediaType and InterfaceType but those can use a simple str wrap as we are not calculating anything
+            try:
+                Capacity = str(round(((int(item.Size)) / (1000 ** 3)), 2))
+            except:
+                print("\n\n USERS DRIVE DOES NOT HAVE A DISPLAYABLE CAPACITY")
+                Capacity = "NONE"
+
             final_string += "\t Drive "+ str(count) + " :" + item.Model + "\n"
             final_string += "\t\t Capacity: " + Capacity  + " GB\n"
             final_string += "\t\t Free Space: " + self.free_space_return(count-1) + "\n"
