@@ -24,10 +24,14 @@ class Hardware:
 
 class CPU(Hardware):
 
+    def __init__(self, h_list):
+        super().__init__(h_list)
+        self.cpu_info = self.dictionary_setup()
 
     # Returns a basic summary of CPU info to display to user in Gen info func
     def string_general_info(self):
         final_string = ""
+        
 
         if self.amount == 1:
             final_string += "CPU: " + self.names[0] + "\n"
@@ -40,6 +44,38 @@ class CPU(Hardware):
                 count_of_cpus += 1
 
         return final_string
+
+    # This will be the place we will store most our info for the advanced info
+    # We do this so we do not need to constantly call the WMI and all in that function
+    # Just ask from the class should be faster
+    def dictionary_setup(self):
+        # The main reason i am using a dict is to support multiple CPUs if for any reason there is some 
+        dictionary = {}
+
+        dictionary["Manufactor"] = []
+        dictionary["Architect"] = []
+        dictionary["PhysCore"] = []
+        dictionary["LogCore"] = []
+        dictionary["MaxClock"] = []
+        dictionary["L2"] = []
+        dictionary["L3"] = []
+
+        for item in self.information:
+        # Manufactor
+            dictionary["Manufactor"].append(str(item.Manufacturer))
+        # Architecture
+            dictionary["Architect"].append(str(item.Architecture))
+        # Physical Core
+            dictionary["PhysCore"].append(str(item.NumberOfCores))
+        # Logical Core
+            dictionary["LogCore"].append(str(item.NumberOfLogicalProcessors))
+        # Max Clock Speeds
+            dictionary["MaxClock"].append(str(item.MaxClockSpeed))
+        # L2 caches
+            dictionary["L2"].append(str(int(item.L2CacheSize)/1024))
+        # L3 caches
+            dictionary["L3"].append(str(int(item.L3CacheSize)/1024))
+        return dictionary
 
 # Follow the same structure as the CPU class basically
 class GPU(Hardware):
@@ -78,7 +114,7 @@ class RAM(Hardware):
 
         count_for_ram = 1
         for item in self.information:
-            final_string += "\t STICK " + str(count_for_ram) + ":\n\t\t CAPACITY: " + str(self.gb_capacity[count_for_ram-1]) + "\n\n"
+            final_string += "\t STICK " + str(count_for_ram) + ":\n\t\t CAPACITY: " + str(self.gb_capacity[count_for_ram-1]) + " GB\n\n"
             count_for_ram += 1
         return final_string
 
@@ -98,10 +134,12 @@ class Storage:
         return ((int(num)) / (1000 ** 3))
 
     def __init__(self, hard_list, logic_list):
+        self.raltion = wmi.WMI().Win32_LogicalDiskToPartition()
         self.physical_hardware = hard_list
         self.logical_hardware = logic_list
         self.important_relations = self.important_setup()
         self.valued_partition_count = self.valued_partition_ctSetup()
+        
 
 
     def string_general_info(self):
@@ -130,11 +168,12 @@ class Storage:
     def update_values(self,hard_list,logic_list):
         self.physical_hardware = hard_list
         self.logical_hardware = logic_list
+        self.raltion = wmi.WMI().Win32_LogicalDiskToPartition()
 
     def important_setup(self):
         # Just found this extremly useful object, did not see it before gives so much good info and solves big partition problem
         # Dependent is key here
-        relation = wmi.WMI().Win32_LogicalDiskToPartition()
+        relation = self.raltion
         
         # Set up a dictionary for easy acess to important partitions
         # Will map it out with ID:(this will be like OS and stuff so each logical disk gets matched to appropriate physical disk)

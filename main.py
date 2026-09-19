@@ -33,6 +33,8 @@ my_storage = Storage(drive_list, disk_list)
 #   Loop control
 running_script = True
 
+# Architect is mapped in code for soem reason 
+arch_map = ["x86","MIPS","Alpha","PowerPC","","ARM","Itanium","","","x64"]
 
 #       -Function Def-
 
@@ -94,7 +96,63 @@ def display_general_hardware_info():
 
 # Display CPU info
 def display_cpu_info():
-    return 
+    # Base setups
+    # Idea is to have a static string that displays like the info that dont change
+    # Then a live updating thing to show usage and stats like that
+
+    # Space and resource consuming but i want it to look neat
+    space = " "
+    if len(my_cpu.names) > 1:
+        space = "/"
+    static_string = "\n\t\t |--CPU Extended Look--|\n"
+    static_string += "\t----------------------------------------\n"
+
+    quick_dict = my_cpu.cpu_info
+
+    for x in range(0, len(my_cpu.names)):
+        static_string += "CPU#" + str(x+1) + "\n"
+        static_string += "Name: " + my_cpu.names[x] + "\n"
+        static_string += "\tManufacturor: " + quick_dict["Manufactor"][x] + "\tArchitecture: " + arch_map[int(quick_dict["Architect"][x])] + "\n"
+        static_string += "\tCores: " + str(quick_dict["PhysCore"][x]) + "\tThreads: " + str(quick_dict["LogCore"][x]) + "\n"
+        static_string += "\tMax Clock Speed: " + str(quick_dict["MaxClock"][x]) + " MHz\n"
+        static_string += "\tL2 Cache: " + str(quick_dict["L2"][x]) + " MB" + "\tL3 Cache: " + str(quick_dict["L3"][x]) + " MB\n"
+        static_string += "\t----------------------------------------"
+    print(static_string)
+    #print("\033[2A")  move it up like 2 but technically only one line for u 
+    #print("\033[2K")  then clear it 
+    # prob a move clear loop going on would work 
+
+    print("\t\t - LIVE DATA -\n")
+
+    # LIVE DATA DISPALY 
+
+    # Need a thread event to wait for input properly
+    user_stop = threading.Event()
+
+    temp_live_display = "\tSpeed: " + str(psutil.cpu_freq().current) + "\n"
+    temp_live_display += "\tOverall usage: " + str(psutil.cpu_percent()) + "% \n"
+    print(temp_live_display)
+    threading.Thread(target=cpu_live_update,args=(user_stop,),daemon=True).start()
+
+    input()
+    user_stop.set()
+    os.system("cls")
+    return
+     
+def cpu_live_update(stop):
+    pythoncom.CoInitialize()
+    running = True
+    while not stop.is_set():
+        print("\033[4A", end="")
+        print("\033[2K")
+        temp_live_display = "\tSpeed: " + str(psutil.cpu_freq().current) + "\n"
+        temp_live_display += "\tOverall usage: " + str(psutil.cpu_percent()) + "% \n"
+        temp_live_display += "\tPRESS ENTER TO STOP"
+        print(temp_live_display)
+        time.sleep(2)
+
+
+
 
 # Display GPU info 
 def display_gpu_info():
@@ -115,7 +173,7 @@ def update():
         my_cpu.update_values(wmi.WMI().Win32_Processor())
         my_gpu.update_values(wmi.WMI().Win32_VideoController())
         my_storage.update_values(wmi.WMI().Win32_DiskDrive(),wmi.WMI().Win32_LogicalDisk())
-        time.sleep(1)
+        time.sleep(5)
 
 #           -Script Startup-
 def main():
