@@ -80,6 +80,31 @@ class CPU(Hardware):
 # Follow the same structure as the CPU class basically
 class GPU(Hardware):
 
+    def __init__(self, h_list):
+        super().__init__(h_list)
+        self.gpu_info = self.dict_setup()
+
+    def dict_setup(self):
+        return_dict = {}
+
+        return_dict["Manufact"] = []
+        return_dict["VideoProc"] = []
+        return_dict["RefreshRate"] = []
+        return_dict["Status"] = []
+        return_dict["DeviceId"] = []
+
+        for item in self.information:
+            return_dict["Manufact"].append(str(item.AdapterCompatibility))
+            return_dict["VideoProc"].append(str(item.VideoProcessor))
+            if int(item.MaxRefreshRate) == 0:
+                return_dict["RefreshRate"].append(str(item.MaxRefreshRate)+" GPU is not the display driving adaptor ATM")
+            else:
+                return_dict["RefreshRate"].append(str(item.MaxRefreshRate))
+            return_dict["Status"].append(str(item.Status))
+            return_dict["DeviceId"].append(str(item.DeviceID))
+
+        return return_dict
+
     def string_general_info(self):
         final_string = ""
 
