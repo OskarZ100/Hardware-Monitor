@@ -99,11 +99,6 @@ def display_cpu_info():
     # Base setups
     # Idea is to have a static string that displays like the info that dont change
     # Then a live updating thing to show usage and stats like that
-
-    # Space and resource consuming but i want it to look neat
-    space = " "
-    if len(my_cpu.names) > 1:
-        space = "/"
     static_string = "\n\t\t |--CPU Extended Look--|\n"
     static_string += "\t----------------------------------------\n"
 
@@ -156,6 +151,23 @@ def cpu_live_update(stop):
 
 # Display GPU info 
 def display_gpu_info():
+    # Cool display for this one we gonna test a new one out
+    # --- NAME OF GPU --- and do that like in the top for each 
+    # Cant actually display live info psutil and even WMI doesnt really help here
+    # Not much to give 
+    # This approach is far less memory taxing like i did in the CPU just to display different ways for V2
+    for x in range(0, len(my_gpu.names)):
+        print("\t\t--- " + my_gpu.names[x] + " ---\n")
+        print("\tManufacturor: " + my_gpu.gpu_info["Manufact"][x])
+        print("\tVideo Processor: " + my_gpu.gpu_info["VideoProc"][x])
+        print("\tMax Supported Refresh Rate: " + my_gpu.gpu_info["RefreshRate"][x])
+        print("\tStatus: " + my_gpu.gpu_info["Status"][x])
+        print("\tDevice ID: " + my_gpu.gpu_info["DeviceId"][x])
+        print("\n\n")
+
+    print("\t\t-- PRESS ENTER TO LEAVE --\n")
+    input()
+    os.system("cls")
     return
 
 # Display RAM info 
