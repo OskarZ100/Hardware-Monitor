@@ -89,7 +89,7 @@ def display_general_hardware_info():
     my_ram.string_general_info() + \
     my_storage.string_general_info()) 
     #ADD WARNINGS LIKE MAYBE stuff where its like ok this is weirdly high or overused at bottom
-    print("\n\n\n Press enter to go back to menu!\n")
+    print("\n Press enter to go back to menu!\n")
     input()
     os.system("cls")
     return
@@ -136,15 +136,14 @@ def display_cpu_info():
      
 def cpu_live_update(stop):
     pythoncom.CoInitialize()
-    running = True
     while not stop.is_set():
-        print("\033[4A", end="")
-        print("\033[2K")
+        clear_line(3)
         temp_live_display = "\tSpeed: " + str(psutil.cpu_freq().current) + "\n"
         temp_live_display += "\tOverall usage: " + str(psutil.cpu_percent()) + "% \n"
         temp_live_display += "\tPRESS ENTER TO STOP"
         print(temp_live_display)
         time.sleep(2)
+    pythoncom.CoUninitialize() # This stops leaks idk how i didnt see this b4 
 
 
 
@@ -172,7 +171,49 @@ def display_gpu_info():
 
 # Display RAM info 
 def display_ram_info():
+    # Same static and Live stuff 
+    # Make Static prints like gpu 
+
+    for x in range(0, len(my_ram.names)):
+        print("\t\t--- STICK #" + str(x) + " ---")
+        print("\tCapacity: " + str(my_ram.gb_capacity[x]) + " GB")
+        print("\tManufacturor: " + my_ram.dict["man"][x])
+        print("\tSpeed: " + my_ram.dict["speed"][x] + " MHz")
+        print("\tForm Factor: " + my_ram.dict["formfact"][x])
+        print()
+
+    print("\t\t-- LIVE DISPLAY --")
+    # Live display section 
+    user_stop = threading.Event()
+    temp_live_display = "\tTotal Usage: " + str(psutil.virtual_memory().percent) + "%\n"
+    temp_live_display += "\tSwap usage: " + str(psutil.swap_memory().percent) + "% \n"
+    print(temp_live_display)
+    threading.Thread(target=ram_live_update,args=(user_stop,),daemon=True).start()
+
+    input()
+    user_stop.set()
+    os.system("cls")
+
+
     return 
+
+
+def clear_line(amnt):
+    for x in range(0,amnt):
+        print("\033[1A\033[2K", end="")
+
+# Pretty much copypaste of the CPU update function 
+def ram_live_update(stop):
+    pythoncom.CoInitialize()
+    while not stop.is_set():
+        clear_line(3)
+        temp_live_display = "\tTotal Usage: " + str(psutil.virtual_memory().percent) + "%\n"
+        temp_live_display += "\tSwap Usage: " + str(psutil.swap_memory().percent) + "% \n"
+        temp_live_display += "\tPRESS ENTER TO STOP"
+        print(temp_live_display)
+        time.sleep(2)
+    pythoncom.CoUninitialize() # This stops leaks idk how i didnt see this b4 
+
 
 # Display Storage info
 def display_storage_info():
