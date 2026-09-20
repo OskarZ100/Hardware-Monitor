@@ -124,8 +124,24 @@ class RAM(Hardware):
 
     def __init__(self, h_list):
         super().__init__(h_list)
-
+        self.dict = self.dict_setup()
         self.gb_capacity = self.get_capacity()
+
+    def dict_setup(self):
+        dict = {}
+
+        dict["man"] = []
+        dict["speed"] = []
+        dict["formfact"] = []
+        dict["status"] = []
+
+        for x in self.information:
+            dict["man"].append(str(x.Manufacturer))
+            dict["speed"].append(str(x.Speed))
+            dict["formfact"].append(str(x.FormFactor))
+            dict["status"].append(str(x.Status))
+
+        return dict
 
     def get_capacity(self):
         ram_capacity = []
@@ -237,9 +253,7 @@ class Storage:
         for i in range(0, self.valued_partition_count[num]):
             final_string += "\t    Drive Letter: " + str(list(self.important_relations.values())[num][i].Device_id) + "\n"
             final_string += "\t\t Capacity of Drive: " +str(self.to_gb(int(list(self.important_relations.values())[num][i].capacity))) + " GB\n"
-            final_string += "\t\t Free space of Drive: " +str(self.to_gb(int(list(self.important_relations.values())[num][i].freespace))) + " GB\n\n"
-
-
+            final_string += "\t\t Free space of Drive: " +str(self.to_gb(int(list(self.important_relations.values())[num][i].freespace))) + " GB\n"
 
         return final_string
 
