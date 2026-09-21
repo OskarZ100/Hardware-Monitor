@@ -249,6 +249,7 @@ def display_storage_info():
     user_stop = threading.Event()
     threading.Thread(target=update_storage,args=(user_stop,),daemon=True).start()
     input()
+    user_stop.set()
     os.system("cls")
     return
 
