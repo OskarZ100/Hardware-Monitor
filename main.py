@@ -197,7 +197,8 @@ def display_ram_info():
 
     return 
 
-
+# Not vital to the program but makes more sense for me personally to look at
+# I was having issues with the ram clear line so i added it and it fixed it
 def clear_line(amnt):
     for x in range(0,amnt):
         print("\033[1A\033[2K", end="")
@@ -216,8 +217,59 @@ def ram_live_update(stop):
 
 
 # Display Storage info
+# Will not have any live values for this version as it is hard to visualize how to grab and update without-
+# -it being a mess on memory and how fast it will run
 def display_storage_info():
+    print("\t\t|-- STORAGE --|")
+    print("\t-------------------------------")
+    print("\t-PHYSICAL DRIVES-")
+    for i in my_storage.physical_hardware:
+        
+        print("\tName: " + i.Model)
+        print("\tDevice id: " + i.DeviceID)
+        print("\tMedia Type: " + i.MediaType)
+        print("\tPartition count: " + str(i.Partitions))
+
+    print("\n")
+
+    print("\t-Live Values-")
+    # Didnt catch psutil has some neat functions for size
+    # Would have been easier to use this than WMI for free storage
+    # Catch for V2
+    for i in my_storage.logical_hardware:
+        if not i.DeviceID == None:
+            devid = i.DeviceID
+            psutilcombo = str(devid + "\\")
+            print("\tDrive Letter: " + devid)
+            print("\tCapacity: " + str(round(my_storage.to_gb(psutil.disk_usage(psutilcombo).total),2))+ " GB")
+            print("\tFree Space: " + str(round(my_storage.to_gb(psutil.disk_usage(psutilcombo).free),2)) + " GB")
+            print("\tPercentage: " + str(psutil.disk_usage(psutilcombo).percent) + "%")
+
+    print("\tPRESS ENTER TO STOP")
+    user_stop = threading.Event()
+    threading.Thread(target=update_storage,args=(user_stop,),daemon=True).start()
+    input()
+    os.system("cls")
     return
+
+def update_storage(stop):
+    pythoncom.CoInitialize()
+    while not stop.is_set():
+        clear_line((4*len(my_storage.logical_hardware))+1)
+        for i in my_storage.logical_hardware:
+            if not i.DeviceID == None:
+                devid = i.DeviceID
+                psutilcombo = str(devid + "\\")
+                print("\tDrive Letter: " + devid)
+                print("\tCapacity: " + str(round(my_storage.to_gb(psutil.disk_usage(psutilcombo).total),2))+ " GB")
+                print("\tFree Space: " + str(round(my_storage.to_gb(psutil.disk_usage(psutilcombo).free),2)) + " GB")
+                print("\tPercentage: " + str(psutil.disk_usage(psutilcombo).percent) + "%")
+                
+
+        print("\tPRESS ENTER TO STOP")
+        time.sleep(10)
+    pythoncom.CoUninitialize()
+
 
 # Update function to maintain updated values
 def update():
