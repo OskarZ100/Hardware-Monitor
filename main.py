@@ -104,7 +104,7 @@ def display_cpu_info():
 
     quick_dict = my_cpu.cpu_info
 
-    for x in range(0, len(my_cpu.names)):
+    for x in range(my_cpu.amount):
         static_string += "CPU#" + str(x+1) + "\n"
         static_string += "Name: " + my_cpu.names[x] + "\n"
         static_string += "\tManufacturor: " + quick_dict["Manufactor"][x] + "\tArchitecture: " + arch_map[int(quick_dict["Architect"][x])] + "\n"
@@ -155,7 +155,7 @@ def display_gpu_info():
     # Cant actually display live info psutil and even WMI doesnt really help here
     # Not much to give 
     # This approach is far less memory taxing like i did in the CPU just to display different ways for V2
-    for x in range(0, len(my_gpu.names)):
+    for x in range(my_gpu.amount):
         print("\t\t--- " + my_gpu.names[x] + " ---\n")
         print("\tManufacturor: " + my_gpu.gpu_info["Manufact"][x])
         print("\tVideo Processor: " + my_gpu.gpu_info["VideoProc"][x])
@@ -174,7 +174,7 @@ def display_ram_info():
     # Same static and Live stuff 
     # Make Static prints like gpu 
 
-    for x in range(0, len(my_ram.names)):
+    for x in range(my_ram.amount):
         print("\t\t--- STICK #" + str(x) + " ---")
         print("\tCapacity: " + str(my_ram.gb_capacity[x]) + " GB")
         print("\tManufacturor: " + my_ram.dict["man"][x])
