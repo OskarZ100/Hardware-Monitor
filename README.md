@@ -155,7 +155,7 @@ class Hardware:
 
 This is to handle everything CPU \
 Helps with the in depth function in main and the general one \
-Again this will follow the same sort of trend as you see in the other classes but they all have slightly different versions of the same sort of function \
+Again this will follow the same sort of trend as you see in the other classes but they all have slightly different versions of the same sort of function 
 
 ```
 class CPU(Hardware):
@@ -189,7 +189,7 @@ Super simple
 
 Handles everything GPU! \
 Pretty much the exact same setup as CPU class \
-Just slight changes in the general info function obviously and with the dictionary setup there is one difference here \
+Just slight changes in the general info function obviously and with the dictionary setup there is one difference here 
 
 ```
  if int(item.MaxRefreshRate) == 0:
@@ -203,7 +203,7 @@ I learned while doing the project that if you have more than one GPU there will 
 In my case on laptop I have a dedicated GPU and internal GPU which ever is the display driving adaptor \
 So if it shows a 0 my program will assume and tell you which is the adaptor and not \
 Now if your GPU is just lets say completely cooked, it will not be the display driving adaptor so obviously will show that \
-and status will let you know how it is doing, for anyone like well what if the GPU just blew up there u go \
+and status will let you know how it is doing, for anyone like well what if the GPU just blew up there u go 
 
 #### RAM subclass of hardware
 
@@ -211,7 +211,7 @@ Again handles everything RAM \
 Now this is the same exact setup as the CPU and GPU \
 But there is a specific function it has which is getting its Capacity specifically in GB \
 WMI likes to give everything in bytes which is a pain so this handles getting Capacity and storing in an array \
-So when we want to see the capacity we dont need to make a taxing WMI call but just a simple array call \
+So when we want to see the capacity we dont need to make a taxing WMI call but just a simple array call 
 
 ```
     def __init__(self, h_list):
@@ -228,25 +228,25 @@ So when we want to see the capacity we dont need to make a taxing WMI call but j
 ```
 
 Super simple the reason I keep this in an array and don't think it needs updates is because \
-I do not think the user will be switching out or downloading more RAM while program is running :) \
+I do not think the user will be switching out or downloading more RAM while program is running :) 
 
 #### Storage and LD2P classes 
 
 This was probably the harder part of the project because I made it much harder than it needed to be by using WMI and not psutil \
-So psutil actually has a function you can use to get free space and I use it in main.py \
+So psutil actually has a function you can use to get free space and I use it in main.py 
 
 ```
 my_storage.to_gb(psutil.disk_usage(psutilcombo).free)
 ```
 
-As you can see you just pass in a logical drive, but it has to have a drive letter is the thing \
+As you can see you just pass in a logical drive, but it has to have a drive letter is the thing 
 
 Now for the storage class I decided to make a whole new class not a subclass of Hardware because it just didnt make sense to me \
 There are so many different things between the two and Storage objects in WMI act very differently than the rest \
 It has a physical drive, logical disk, and partitions and all these get kind of messy when trying to figure certain things out \
-So I was just like lets make this easier to navigate and write than forcing compatibility \
+So I was just like lets make this easier to navigate and write than forcing compatibility 
 
-So here is kind of the basic setup of the class \
+So here is kind of the basic setup of the class 
 
 ```
 class Storage:
@@ -265,7 +265,7 @@ class Storage:
 There is a lot of setup in this class as you can see \ 
 The to_gb function actually comes in clutch in a lot of functions here and in main \
 So the "raltion" I misspelt relation but wanted to keep it, is helping with the setup specifically important setup function \
-logical and physical hardware setups are pretty straight forward nothing crazy here \
+logical and physical hardware setups are pretty straight forward nothing crazy here 
 
 Now this function was something that I was happy when I made but hated making
 
@@ -291,9 +291,9 @@ I also wanted to map out the the specific volume name to the partitions \
 So when I go to display data to the user its not just showing random partitions but neat and nice, like the correct volume what disk and all that \
 As you can see I use a dictionary again here, really big fan of those sometimes there are better options to use but these are more comfortable for me and V1 \
 Also as you can see we use what is called a Dependent which is honestly an INSANLY helpful object, like it gives you a full list of basically anything and everything you need with a logical disk, also it will give you the partition you need and actually want instead of the random ones nobody cares about \
-So when I found that out I was very happy and you can tell by the comments in the actual code \
-\
-Now LD2P real quick was a super basic class I made \
+So when I found that out I was very happy and you can tell by the comments in the actual code 
+
+Now LD2P real quick was a super basic class I made 
 
 ```
 class LD2P_object:
@@ -306,9 +306,9 @@ class LD2P_object:
 
 The whole purpose of LD2P is Logical drive 2 partition \
 It helps out the setup by making it more readable and less sort of cross over-ish \
-So when I add it to the dictionary all the info you could possibly want from our massive Dependent object from WMI is compressed into what we actually want, and nice and neat instead of having to go through the whole call again \
+So when I add it to the dictionary all the info you could possibly want from our massive Dependent object from WMI is compressed into what we actually want, and nice and neat instead of having to go through the whole call again 
 
-Now the valued partition function \
+Now the valued partition function 
 
 ```
     def valued_partition_ctSetup(self):
@@ -325,9 +325,9 @@ Now the valued partition function \
 
 This function is more for us to tell how many important partitions do we have per physical drive \
 Again all of this is for the simple task of displaying data and how much free space we have \
-Pretty sure an Enum could have been used here, but I didn't use it, honestly in my opinion would have made it more confusing to read \
+Pretty sure an Enum could have been used here, but I didn't use it, honestly in my opinion would have made it more confusing to read 
 
-Now here is the free space return function \
+Now here is the free space return function 
 
 ```
     def free_space_return(self,num):
@@ -343,9 +343,9 @@ Now here is the free space return function \
 
 It just goes through all the valued partitions of the drive we are on, then will show you the drive letter and the free space \
 Sounded simple, was not \
-Again pretty sure if I used a psutil approach it would have been a LOT easier but for V1 wanted to explore many different ways of doing things, as it is my first time using WMI and psutil \
+Again pretty sure if I used a psutil approach it would have been a LOT easier but for V1 wanted to explore many different ways of doing things, as it is my first time using WMI and psutil
 
-Also for the to string function, I added a try/except in case the capacity was empty for whatever reason \
+Also for the to string function, I added a try/except in case the capacity was empty for whatever reason 
 
 ```
             try:
@@ -354,7 +354,7 @@ Also for the to string function, I added a try/except in case the capacity was e
                 Capacity = "NONE"
 ```
 
-In case there is true it will just show NONE, simple \
+In case there is true it will just show NONE, simple 
 
 
 
