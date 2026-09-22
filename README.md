@@ -22,7 +22,8 @@ And the program should run
 ## Demonstration of program 
 <br>
 After running the program you should get a prompt displaying the functions of the program <br>
-<p align="center"><img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/45932c73-a777-420a-9bea-fdcf454efd20" /></p>
+<br>
+<p align="center"><img width="400" height="250" alt="image" src="https://github.com/user-attachments/assets/45932c73-a777-420a-9bea-fdcf454efd20" /></p>
 <br>
 The only inputs the program will accept are
 ```
@@ -34,7 +35,7 @@ Input is a plain number no spaces try again and select a valid input
 ```
 <br>
 As shown,  <br>
-<p align="center"><img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/d0430c1b-7466-43a3-9bef-ae26ca614e95" /></p>
+<p align="center"><img width="400" height="300" alt="image" src="https://github.com/user-attachments/assets/d0430c1b-7466-43a3-9bef-ae26ca614e95" /></p>
 <br>
 ### (0) - Info About Project command
 Displays basic like info about me and the project nothing fancy at all
@@ -42,7 +43,9 @@ Displays basic like info about me and the project nothing fancy at all
 Displays static general info about every component featured <br>
 These are values grabbed at the exact time the function is called <br>
 Updated live values only show up in the specific functions of each hardware component<br>
-<img width="682" height="657" alt="image" src="https://github.com/user-attachments/assets/78b96b7d-6022-4df2-a7db-3ff8b068e1fc" />
+<br>
+<p align="center"><img width="300" height="600" alt="image" src="https://github.com/user-attachments/assets/78b96b7d-6022-4df2-a7db-3ff8b068e1fc" /></p>
+<br>
 <br>
 As you can see it is pretty bare bones, that is by design as I did not want to give too much detail on a general info command
 
@@ -59,29 +62,29 @@ If for any reason the user has multiple CPUs it will support this <br>
 It will also have a live data section that updates every 2 seconds utilizing threading<br>
 Live data displays usage and speed I got the live updated data through psutil rather than WMI as it is less taxing<br>
 WMI was still used in all update functions just to grab how many items are in the sets<br>
-<img width="250" height="250" alt="cpuinfo" src="https://github.com/user-attachments/assets/05749a91-6c81-4e1d-8786-56ae830d9924" />
+<p align="center"><img width="400" height="300" alt="cpuinfo" src="https://github.com/user-attachments/assets/05749a91-6c81-4e1d-8786-56ae830d9924" /></p>
 <br>
 ### (3) - GPU information 
 This command will display information about any GPUs on the system <br>
 This only contains basic static data <br>
 The reason for this I go more into depth on in the documentation section but it boils down to the way windows calculates this <br>
-<img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/48356089-0a6c-499e-9f0a-443f5d908288" />
+<p align="center"><img width="600" height="350" alt="image" src="https://github.com/user-attachments/assets/48356089-0a6c-499e-9f0a-443f5d908288" /></p>
 <br>
 ### (4) - RAM information 
 This will show you RAM information, follows same sort of blueprint like the CPU command <br>
 shows static data on top with general live information in the live section <br>
 I decided to just show the total usage with the live data as it is much neater in my opinion <br>
-<img width="250" height="250" alt="raminfo" src="https://github.com/user-attachments/assets/8a8ac297-5931-4297-b69a-c3ba79bb129b" />
+<p align="center"><img width="250" height="250" alt="raminfo" src="https://github.com/user-attachments/assets/8a8ac297-5931-4297-b69a-c3ba79bb129b" /></p>
 <br>
 ### (5) - Storage information
 Shows as you guessed, basic storage information with a live display that utilizes psutil <br>
 In this project I found many ways to display free space, I had such such such an easier time using psutil <br>
 WMI process for free space was one of the harder and annoying things to implement while psutil took me like 5 min <br>
-<img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/ab7e3ac7-68e6-415a-b96b-e3b486d74dc4" />
+<p align="center"><img width="250" height="300" alt="image" src="https://github.com/user-attachments/assets/ab7e3ac7-68e6-415a-b96b-e3b486d74dc4" /></p>
 <br>
 ### (6) - Clear console
 Very straight forward command, just clear the console incase you somehow misinputed a ton of stuff <br>
-<img width="250" height="250" alt="clearscreen" src="https://github.com/user-attachments/assets/eadbb9e8-31e8-469f-90c1-1ad63e0b826d" />
+<p align="center"><img width="250" height="250" alt="clearscreen" src="https://github.com/user-attachments/assets/eadbb9e8-31e8-469f-90c1-1ad63e0b826d" /></p>
 <br>
 ### (7) - End session
 Again pretty self explanatory, ends process ez <br>
