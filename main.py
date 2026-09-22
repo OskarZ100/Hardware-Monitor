@@ -135,15 +135,13 @@ def display_cpu_info():
     return
      
 def cpu_live_update(stop):
-    pythoncom.CoInitialize()
     while not stop.is_set():
         clear_line(3)
         temp_live_display = "\tSpeed: " + str(psutil.cpu_freq().current) + "\n"
         temp_live_display += "\tOverall usage: " + str(psutil.cpu_percent()) + "% \n"
         temp_live_display += "\tPRESS ENTER TO STOP"
         print(temp_live_display)
-        time.sleep(2)
-    pythoncom.CoUninitialize() # This stops leaks idk how i didnt see this b4 
+        time.sleep(2) 
 
 
 
@@ -205,7 +203,6 @@ def clear_line(amnt):
 
 # Pretty much copypaste of the CPU update function 
 def ram_live_update(stop):
-    pythoncom.CoInitialize()
     while not stop.is_set():
         clear_line(3)
         temp_live_display = "\tTotal Usage: " + str(psutil.virtual_memory().percent) + "%\n"
@@ -213,7 +210,6 @@ def ram_live_update(stop):
         temp_live_display += "\tPRESS ENTER TO STOP"
         print(temp_live_display)
         time.sleep(2)
-    pythoncom.CoUninitialize() # This stops leaks idk how i didnt see this b4 
 
 
 # Display Storage info
