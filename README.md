@@ -172,7 +172,7 @@ class CPU(Hardware):
 ```
 
 The dictionary setup is pretty basic I just setup all the keys I want
-Then I loop through all the objects in information and store accordingly
+Then I loop through all the objects in information and store accordingly \
 Super simple
 
 #### GPU subclass of hardware
@@ -192,7 +192,7 @@ Ok as you can see this is a little different
 I learned while doing the project that if you have more than one GPU there will be one display driving adaptor
 In my case on laptop I have a dedicated GPU and internal GPU which ever is the display driving adaptor
 So if it shows a 0 my program will assume and tell you which is the adaptor and not
-Now if your GPU is just lets say completely cooked, it will not be the display driving adaptor so obviously will show that-
+Now if your GPU is just lets say completely cooked, it will not be the display driving adaptor so obviously will show that
 and status will let you know how it is doing, for anyone like well what if the GPU just blew up there u go
 
 #### RAM subclass of hardware
@@ -217,7 +217,7 @@ So when we want to see the capacity we dont need to make a taxing WMI call but j
         return ram_capacity
 ```
 
-Super simple the reason I keep this in an array and don't think it needs updates is because-
+Super simple the reason I keep this in an array and don't think it needs updates is because
 I do not think the user will be switching out or downloading more RAM while program is running :)
 
 #### Storage and LD2P classes 
