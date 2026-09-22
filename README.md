@@ -22,7 +22,7 @@ And the program should run
 ## Demonstration of program 
 <br>
 After running the program you should get a prompt displaying the functions of the program <br>
-<img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/45932c73-a777-420a-9bea-fdcf454efd20" />
+<p align="center"><img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/45932c73-a777-420a-9bea-fdcf454efd20" /></p>
 <br>
 The only inputs the program will accept are
 ```
