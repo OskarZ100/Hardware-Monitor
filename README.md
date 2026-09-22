@@ -20,8 +20,10 @@ py .\main.py
 And the program should run 
 
 ## Demonstration of program 
-After running the program you should get a prompt displaying the functions of the program 
+<br>
+After running the program you should get a prompt displaying the functions of the program <br>
 <img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/45932c73-a777-420a-9bea-fdcf454efd20" />
+<br>
 The only inputs the program will accept are
 ```
 0,1,2,3,4,5,6, or 7
@@ -30,15 +32,18 @@ If you enter a non valid input the program will display, and prompt the menu aga
 ```
 Input is a plain number no spaces try again and select a valid input
 ```
-As shown, 
-<img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/d0430c1b-7466-43a3-9bef-ae26ca614e95" />
+<br>
+As shown,  <br>
+<p align="center"><img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/d0430c1b-7466-43a3-9bef-ae26ca614e95" /></p>
+<br>
 ### (0) - Info About Project command
 Displays basic like info about me and the project nothing fancy at all
 ### (1) - General Hardware Info 
-Displays static general info about every component featured 
-These are values grabbed at the exact time the function is called 
-Updated live values only show up in the specific functions of each hardware component
+Displays static general info about every component featured <br>
+These are values grabbed at the exact time the function is called <br>
+Updated live values only show up in the specific functions of each hardware component<br>
 <img width="682" height="657" alt="image" src="https://github.com/user-attachments/assets/78b96b7d-6022-4df2-a7db-3ff8b068e1fc" />
+<br>
 As you can see it is pretty bare bones, that is by design as I did not want to give too much detail on a general info command
 
 #### QUICK INFO
