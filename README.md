@@ -8,15 +8,19 @@ making it work and going through trial and error as you can see in the comments 
 - Python
 
 Install WMI and psutil and pywin32
+
 ```
 pip install psutil WMI pywin32
 ```
+
 These are super important as it relies on these libraries and dependencies 
 
 Then once all installed head over to your terminal, cd to the location of the file and run 
+
 ```
 py .\main.py
 ```
+
 And the program should run 
 
 ## Demonstration of program 
@@ -26,13 +30,17 @@ After running the program you should get a prompt displaying the functions of th
 <p align="center"><img width="400" height="250" alt="image" src="https://github.com/user-attachments/assets/45932c73-a777-420a-9bea-fdcf454efd20" /></p>
 <br>
 The only inputs the program will accept are
+
 ```
 0,1,2,3,4,5,6, or 7
 ```
+
 If you enter a non valid input the program will display, and prompt the menu again  
+
 ```
 Input is a plain number no spaces try again and select a valid input
 ```
+
 <br>
 As shown, 
 <br>
@@ -56,9 +64,11 @@ As you can see it is pretty bare bones, that is by design as I did not want to g
 At the end of every command (except if you enter a non valid command) it will prompt you to press enter clear the console and print
 the menu again 
 Like this <br>
+
 ```
  Press enter to go back to menu!
 ```
+
 ### (2) - CPU information
 On entering this command it will display a set of basic static information about your CPU <br>
 If for any reason the user has multiple CPUs it will support this <br>
@@ -143,9 +153,9 @@ class Hardware:
 
 #### CPU subclass of hardware
 
-This is to handle everything CPU
-Helps with the in depth function in main and the general one
-Again this will follow the same sort of trend as you see in the other classes but they all have slightly different versions of the same sort of function
+This is to handle everything CPU \
+Helps with the in depth function in main and the general one \
+Again this will follow the same sort of trend as you see in the other classes but they all have slightly different versions of the same sort of function \
 
 ```
 class CPU(Hardware):
@@ -171,15 +181,15 @@ class CPU(Hardware):
         return final_string
 ```
 
-The dictionary setup is pretty basic I just setup all the keys I want
+The dictionary setup is pretty basic I just setup all the keys I want \
 Then I loop through all the objects in information and store accordingly \
 Super simple
 
 #### GPU subclass of hardware
 
-Handles everything GPU!
-Pretty much the exact same setup as CPU class
-Just slight changes in the general info function obviously and with the dictionary setup there is one difference here
+Handles everything GPU! \
+Pretty much the exact same setup as CPU class \
+Just slight changes in the general info function obviously and with the dictionary setup there is one difference here \
 
 ```
  if int(item.MaxRefreshRate) == 0:
@@ -188,20 +198,20 @@ Just slight changes in the general info function obviously and with the dictiona
    return_dict["RefreshRate"].append(str(item.MaxRefreshRate))
 ```
 
-Ok as you can see this is a little different
-I learned while doing the project that if you have more than one GPU there will be one display driving adaptor
-In my case on laptop I have a dedicated GPU and internal GPU which ever is the display driving adaptor
-So if it shows a 0 my program will assume and tell you which is the adaptor and not
-Now if your GPU is just lets say completely cooked, it will not be the display driving adaptor so obviously will show that
-and status will let you know how it is doing, for anyone like well what if the GPU just blew up there u go
+Ok as you can see this is a little different \
+I learned while doing the project that if you have more than one GPU there will be one display driving adaptor \
+In my case on laptop I have a dedicated GPU and internal GPU which ever is the display driving adaptor \
+So if it shows a 0 my program will assume and tell you which is the adaptor and not \
+Now if your GPU is just lets say completely cooked, it will not be the display driving adaptor so obviously will show that \
+and status will let you know how it is doing, for anyone like well what if the GPU just blew up there u go \
 
 #### RAM subclass of hardware
 
-Again handles everything RAM
-Now this is the same exact setup as the CPU and GPU 
-But there is a specific function it has which is getting its Capacity specifically in GB
-WMI likes to give everything in bytes which is a pain so this handles getting Capacity and storing in an array
-So when we want to see the capacity we dont need to make a taxing WMI call but just a simple array call 
+Again handles everything RAM \
+Now this is the same exact setup as the CPU and GPU \
+But there is a specific function it has which is getting its Capacity specifically in GB \
+WMI likes to give everything in bytes which is a pain so this handles getting Capacity and storing in an array \
+So when we want to see the capacity we dont need to make a taxing WMI call but just a simple array call \
 
 ```
     def __init__(self, h_list):
@@ -217,24 +227,135 @@ So when we want to see the capacity we dont need to make a taxing WMI call but j
         return ram_capacity
 ```
 
-Super simple the reason I keep this in an array and don't think it needs updates is because
-I do not think the user will be switching out or downloading more RAM while program is running :)
+Super simple the reason I keep this in an array and don't think it needs updates is because \
+I do not think the user will be switching out or downloading more RAM while program is running :) \
 
 #### Storage and LD2P classes 
 
-This was probably the harder part of the project because I made it much harder than it needed to be by using WMI and not psutil
-So psutil actually has a function you can use to get free space and I use it in main.py
+This was probably the harder part of the project because I made it much harder than it needed to be by using WMI and not psutil \
+So psutil actually has a function you can use to get free space and I use it in main.py \
 
 ```
 my_storage.to_gb(psutil.disk_usage(psutilcombo).free)
 ```
 
-As you can see you just pass in a logical drive, but it has to have a drive letter is the thing
+As you can see you just pass in a logical drive, but it has to have a drive letter is the thing \
 
-Now for the storage class I decided to make a whole new class not a subclass of Hardware because it just didnt make sense to me 
-There are so many different things between the two and Storage objects in WMI act very differently than the rest
-It has a physical drive, logical disk, and partitions and all these get kind of messy when trying to figure certain things out
-So I was just like lets make this easier to navigate and write than forcing compatibility 
+Now for the storage class I decided to make a whole new class not a subclass of Hardware because it just didnt make sense to me \
+There are so many different things between the two and Storage objects in WMI act very differently than the rest \
+It has a physical drive, logical disk, and partitions and all these get kind of messy when trying to figure certain things out \
+So I was just like lets make this easier to navigate and write than forcing compatibility \
+
+So here is kind of the basic setup of the class \
+
+```
+class Storage:
+
+    def to_gb (self,num): <--- Super helpful function as I convert A LOT in here
+        return ((int(num)) / (1000 ** 3)) <--- GB not GiB
+
+    def __init__(self, hard_list, logic_list):
+        self.raltion = wmi.WMI().Win32_LogicalDiskToPartition() <-- Useful partitions here
+        self.physical_hardware = hard_list <-- Physical drive
+        self.logical_hardware = logic_list <-- Logical disk
+        self.important_relations = self.important_setup() <-- The super annoying function for setting up partitions
+        self.valued_partition_count = self.valued_partition_ctSetup() <-- Things we use to calculate values
+```
+
+There is a lot of setup in this class as you can see \ 
+The to_gb function actually comes in clutch in a lot of functions here and in main \
+So the "raltion" I misspelt relation but wanted to keep it, is helping with the setup specifically important setup function \
+logical and physical hardware setups are pretty straight forward nothing crazy here \
+
+Now this function was something that I was happy when I made but hated making
+
+```
+    def important_setup(self):
+        relation = self.raltion
+        
+        mapper = {}
+        for x in relation:
+            vol_name = str(x.Dependent.VolumeName)
+            temp_obj_holder = LD2P_object(str(x.Dependent.DeviceID),str(x.Dependent.Size),str(x.Dependent.FreeSpace))
+        
+            if mapper.get(vol_name) is None:
+                mapper[vol_name] = []
+        
+            mapper[vol_name].append(temp_obj_holder)
+
+        return mapper
+```
+
+I learned how to spell relation here \
+I also wanted to map out the the specific volume name to the partitions \ 
+So when I go to display data to the user its not just showing random partitions but neat and nice, like the correct volume what disk and all that \
+As you can see I use a dictionary again here, really big fan of those sometimes there are better options to use but these are more comfortable for me and V1 \
+Also as you can see we use what is called a Dependent which is honestly an INSANLY helpful object, like it gives you a full list of basically anything and everything you need with a logical disk, also it will give you the partition you need and actually want instead of the random ones nobody cares about \
+So when I found that out I was very happy and you can tell by the comments in the actual code \
+\
+Now LD2P real quick was a super basic class I made \
+
+```
+class LD2P_object:
+
+    def __init__(self,Device_id,Capacity,Freespace):
+        self.Device_id = Device_id
+        self.capacity = Capacity
+        self.freespace = Freespace
+```
+
+The whole purpose of LD2P is Logical drive 2 partition \
+It helps out the setup by making it more readable and less sort of cross over-ish \
+So when I add it to the dictionary all the info you could possibly want from our massive Dependent object from WMI is compressed into what we actually want, and nice and neat instead of having to go through the whole call again \
+
+Now the valued partition function \
+
+```
+    def valued_partition_ctSetup(self):
+        arr_map = [0] * len(self.physical_hardware)
+        
+        setup_count = 0
+        for item in self.important_relations:
+            for part in item[1]:
+                arr_map[setup_count] += 1
+            setup_count += 1
+
+        return arr_map
+```
+
+This function is more for us to tell how many important partitions do we have per physical drive \
+Again all of this is for the simple task of displaying data and how much free space we have \
+Pretty sure an Enum could have been used here, but I didn't use it, honestly in my opinion would have made it more confusing to read \
+
+Now here is the free space return function \
+
+```
+    def free_space_return(self,num):
+        final_string = ""
+
+        for i in range(0, self.valued_partition_count[num]):
+            final_string += "\t    Drive Letter: " + str(list(self.important_relations.values())[num][i].Device_id) + "\n"
+            final_string += "\t\t Capacity of Drive: " +str(self.to_gb(int(list(self.important_relations.values())[num][i].capacity))) + " GB\n"
+            final_string += "\t\t Free space of Drive: " +str(self.to_gb(int(list(self.important_relations.values())[num][i].freespace))) + " GB\n"
+
+        return final_string
+```
+
+It just goes through all the valued partitions of the drive we are on, then will show you the drive letter and the free space \
+Sounded simple, was not \
+Again pretty sure if I used a psutil approach it would have been a LOT easier but for V1 wanted to explore many different ways of doing things, as it is my first time using WMI and psutil \
+
+Also for the to string function, I added a try/except in case the capacity was empty for whatever reason \
+
+```
+            try:
+                Capacity = str(round(((int(item.Size)) / (1000 ** 3)), 2))
+            except(TypeError, ValueError):
+                Capacity = "NONE"
+```
+
+In case there is true it will just show NONE, simple \
+
 
 
 ## V2 Direction
