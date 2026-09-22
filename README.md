@@ -108,4 +108,40 @@ Again pretty self explanatory, ends process ez <br>
 <br>
 
 ## Documentation
+
+I want to kind of just go through some of the program here and stuff I did
+It was a little messy but that is because I wanted to experiment and explore different ways of doing things so I can optimize everything for later versions
+
+### Hardware.py classes
+
+I decided to store my classes in a separate file and import into main to maintain a clean main environment
+The classes could get pretty messy and long with certain functions
+
+#### Hardware (Main class)
+
+This is the Superclass to a lot of the other classes you will see
+I made this to be more efficient and clean, as you can see it doesn't really have anything crazy 
+
+```
+class Hardware:
+    def __init__(self, h_list):
+            self.amount = len(h_list) <-- This value does not look too important but comes in handy in a few subclass functions
+            self.information = h_list <-- Just storing each actual hardware piece for what I am calling
+            self.names = self.setup_names() <-- Getting names, this just makes future calls easier for me
+    
+    def setup_names(self): <-- Super simple function to get the names
+        names = []
+    
+        for items in self.information:
+            names.append(items.Name)
+    
+        return names
+
+    def update_values(self,hardware_list): <-- Helps the update function, makes sure our values are not just snapshots taken at program runtime
+            self.information = hardware_list
+```
+
+
+
+
 ## V2 Direction
