@@ -141,7 +141,100 @@ class Hardware:
             self.information = hardware_list
 ```
 
+#### CPU subclass of hardware
 
+This is to handle everything CPU
+Helps with the in depth function in main and the general one
+Again this will follow the same sort of trend as you see in the other classes but they all have slightly different versions of the same sort of function
+
+```
+class CPU(Hardware):
+
+    def __init__(self, h_list):
+        super().__init__(h_list)
+        self.cpu_info = self.dictionary_setup() <-- Sets up all the data we need for the in depth call
+
+    def string_general_info(self): <-- All subclasses have this function, simple string and info return
+        final_string = "" <-- I feel there are many ways to handle this maybe not most efficient but cleanest for me to follow
+        
+
+        if self.amount == 1:
+            final_string += "CPU: " + self.names[0] + "\n"
+            final_string += "\t USAGE: " + str(self.information[0].LoadPercentage) + "%\n\n" <-- Wanted to use WMI, psutil is faster if its just one though
+        else: <-- Added this so if there is not more than one we dont gotta go thru the whole loop 
+            count_of_cpus = 1
+            for name in self.names:
+                final_string += "CPU " + str(count_of_cpus) + ": " + name + "\n\n"
+                final_string += "\t USAGE: " + str(self.information[count_of_cpus-1].LoadPercentage) + "%\n\n"
+                count_of_cpus += 1
+
+        return final_string
+```
+
+The dictionary setup is pretty basic I just setup all the keys I want
+Then I loop through all the objects in information and store accordingly
+Super simple
+
+#### GPU subclass of hardware
+
+Handles everything GPU!
+Pretty much the exact same setup as CPU class
+Just slight changes in the general info function obviously and with the dictionary setup there is one difference here
+
+```
+ if int(item.MaxRefreshRate) == 0:
+   return_dict["RefreshRate"].append(str(item.MaxRefreshRate)+" GPU is not the display driving adaptor ATM")
+ else:
+   return_dict["RefreshRate"].append(str(item.MaxRefreshRate))
+```
+
+Ok as you can see this is a little different
+I learned while doing the project that if you have more than one GPU there will be one display driving adaptor
+In my case on laptop I have a dedicated GPU and internal GPU which ever is the display driving adaptor
+So if it shows a 0 my program will assume and tell you which is the adaptor and not
+Now if your GPU is just lets say completely cooked, it will not be the display driving adaptor so obviously will show that-
+and status will let you know how it is doing, for anyone like well what if the GPU just blew up there u go
+
+#### RAM subclass of hardware
+
+Again handles everything RAM
+Now this is the same exact setup as the CPU and GPU 
+But there is a specific function it has which is getting its Capacity specifically in GB
+WMI likes to give everything in bytes which is a pain so this handles getting Capacity and storing in an array
+So when we want to see the capacity we dont need to make a taxing WMI call but just a simple array call 
+
+```
+    def __init__(self, h_list):
+        super().__init__(h_list)
+        self.dict = self.dict_setup()
+        self.gb_capacity = self.get_capacity() < --- Makes the call
+
+    def get_capacity(self):
+        ram_capacity = [] <--- Set up our array 
+        for item in self.information: <--- Go through each stick
+            ram_capacity.append(int(item.Capacity) / (1024 ** 3)) <--- Convert and send through
+
+        return ram_capacity
+```
+
+Super simple the reason I keep this in an array and don't think it needs updates is because-
+I do not think the user will be switching out or downloading more RAM while program is running :)
+
+#### Storage and LD2P classes 
+
+This was probably the harder part of the project because I made it much harder than it needed to be by using WMI and not psutil
+So psutil actually has a function you can use to get free space and I use it in main.py
+
+```
+my_storage.to_gb(psutil.disk_usage(psutilcombo).free)
+```
+
+As you can see you just pass in a logical drive, but it has to have a drive letter is the thing
+
+Now for the storage class I decided to make a whole new class not a subclass of Hardware because it just didnt make sense to me 
+There are so many different things between the two and Storage objects in WMI act very differently than the rest
+It has a physical drive, logical disk, and partitions and all these get kind of messy when trying to figure certain things out
+So I was just like lets make this easier to navigate and write than forcing compatibility 
 
 
 ## V2 Direction
