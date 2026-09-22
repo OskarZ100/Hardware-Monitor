@@ -241,6 +241,8 @@ my_storage.to_gb(psutil.disk_usage(psutilcombo).free)
 
 As you can see you just pass in a logical drive, but it has to have a drive letter is the thing 
 
+---
+
 Now for the storage class I decided to make a whole new class not a subclass of Hardware because it just didnt make sense to me \
 There are so many different things between the two and Storage objects in WMI act very differently than the rest \
 It has a physical drive, logical disk, and partitions and all these get kind of messy when trying to figure certain things out \
@@ -266,6 +268,8 @@ There is a lot of setup in this class as you can see \
 The to_gb function actually comes in clutch in a lot of functions here and in main \
 So the "raltion" I misspelt relation but wanted to keep it, is helping with the setup specifically important setup function \
 logical and physical hardware setups are pretty straight forward nothing crazy here 
+
+---
 
 Now this function was something that I was happy when I made but hated making
 
@@ -293,6 +297,8 @@ As you can see I use a dictionary again here, really big fan of those sometimes 
 Also as you can see we use what is called a Dependent which is honestly an INSANLY helpful object, like it gives you a full list of basically anything and everything you need with a logical disk, also it will give you the partition you need and actually want instead of the random ones nobody cares about \
 So when I found that out I was very happy and you can tell by the comments in the actual code 
 
+---
+
 Now LD2P real quick was a super basic class I made 
 
 ```
@@ -307,6 +313,8 @@ class LD2P_object:
 The whole purpose of LD2P is Logical drive 2 partition \
 It helps out the setup by making it more readable and less sort of cross over-ish \
 So when I add it to the dictionary all the info you could possibly want from our massive Dependent object from WMI is compressed into what we actually want, and nice and neat instead of having to go through the whole call again 
+
+---
 
 Now the valued partition function 
 
@@ -327,6 +335,8 @@ This function is more for us to tell how many important partitions do we have pe
 Again all of this is for the simple task of displaying data and how much free space we have \
 Pretty sure an Enum could have been used here, but I didn't use it, honestly in my opinion would have made it more confusing to read 
 
+---
+
 Now here is the free space return function 
 
 ```
@@ -345,6 +355,8 @@ It just goes through all the valued partitions of the drive we are on, then will
 Sounded simple, was not \
 Again pretty sure if I used a psutil approach it would have been a LOT easier but for V1 wanted to explore many different ways of doing things, as it is my first time using WMI and psutil
 
+---
+
 Also for the to string function, I added a try/except in case the capacity was empty for whatever reason 
 
 ```
@@ -362,6 +374,8 @@ Now time for the main file where everything comes together \
 Nothing too crazy here main focus was trying to keep it readable, and organized \
 A lot of the variables are self explanatory but I will attempt to explain the ones that might be on the fence
 
+---
+
 ```
 arch_map = ["x86","MIPS","Alpha","PowerPC","","ARM","Itanium","","","x64"]
 ```
@@ -371,6 +385,7 @@ This array actually comes in helpful when returning CPU architecture \
 For some reason WMI when you want the architecture type for the processor it returns some random number and it doesn't even go in order \
 So I just looked up and mapped out what each number mapped out to 
 
+---
 
 Here is the super simple main script 
 
@@ -407,6 +422,8 @@ For V2 I think I might ditch that idea, although it probably wont it definitely 
 Or performance spiking at the least \
 The update function just runs infinitely until program closes via daemon 
 
+---
+
 ```
 def update():
     pythoncom.CoInitialize() 
@@ -421,6 +438,8 @@ Again pretty simple, Call CoInitialize() so it can actually call and use WMI \
 I do not close it because the only way the loop can stop is through the program terminating so no point really
 
 Many of the display functions in this part of the program follow a very similar method 
+
+---
 
 ```
 def display_ram_info():
@@ -452,6 +471,8 @@ The event is setup so whenever the user wants to move on it will close that thre
 This is done to keep the console free of clutter \
 I use psutil for the live display as again it is far more efficient than having to update and call WMI over and over 
 
+---
+
 ```
 def ram_live_update(stop):
     while not stop.is_set():
@@ -467,6 +488,8 @@ This is the update function \
 Again pretty much the same thing for GPU and storage \
 Do not need CoInitialize here as no WMI usage \
 But pretty simple exits on any input given by user
+
+---
 
 ```
 def clear_line(amnt):
@@ -484,6 +507,8 @@ I wanted to do some calculations and figure out what counters windows uses to gi
 But I couldn't find anything at all, and when you try to call each individual driver through WMI, it will return the messiest clump of different drivers you have ever seen and apparently there is a specific way windows uses counters to calculate the total usage but I was not able to figure it out and implement it here \
 Definitely something to look into further in V2 maybe through an alternative library \
 Did not want to use a whole lot of libraries for this so didn't go about that 
+
+---
 
 ```
 def update_storage(stop):
@@ -513,6 +538,6 @@ I'm sure there might be a few issues with what if the drive has no letter and al
 Here that should not pose a huge issue though and I made sure to catch it just in case \
 The clear line also looks a little messy but this was the formula I figured out through trial and error with the prints 
 
-
+---
 
 ## V2 Direction
