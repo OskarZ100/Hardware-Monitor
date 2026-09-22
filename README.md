@@ -127,7 +127,7 @@ It was a little messy but that is because I wanted to experiment and explore dif
 I decided to store my classes in a separate file and import into main to maintain a clean main environment
 The classes could get pretty messy and long with certain functions
 
-#### Hardware (Main class)
+#### Hardware (BASE class)
 
 This is the Superclass to a lot of the other classes you will see
 I made this to be more efficient and clean, as you can see it doesn't really have anything crazy 
@@ -262,7 +262,7 @@ class Storage:
         self.valued_partition_count = self.valued_partition_ctSetup() <-- Things we use to calculate values
 ```
 
-There is a lot of setup in this class as you can see \ 
+There is a lot of setup in this class as you can see \
 The to_gb function actually comes in clutch in a lot of functions here and in main \
 So the "raltion" I misspelt relation but wanted to keep it, is helping with the setup specifically important setup function \
 logical and physical hardware setups are pretty straight forward nothing crazy here 
@@ -287,7 +287,7 @@ Now this function was something that I was happy when I made but hated making
 ```
 
 I learned how to spell relation here \
-I also wanted to map out the the specific volume name to the partitions \ 
+I also wanted to map out the the specific volume name to the partitions \
 So when I go to display data to the user its not just showing random partitions but neat and nice, like the correct volume what disk and all that \
 As you can see I use a dictionary again here, really big fan of those sometimes there are better options to use but these are more comfortable for me and V1 \
 Also as you can see we use what is called a Dependent which is honestly an INSANLY helpful object, like it gives you a full list of basically anything and everything you need with a logical disk, also it will give you the partition you need and actually want instead of the random ones nobody cares about \
@@ -355,6 +355,163 @@ Also for the to string function, I added a try/except in case the capacity was e
 ```
 
 In case there is true it will just show NONE, simple 
+
+### main.py 
+
+Now time for the main file where everything comes together \
+Nothing too crazy here main focus was trying to keep it readable, and organized \
+A lot of the variables are self explanatory but I will attempt to explain the ones that might be on the fence
+
+```
+arch_map = ["x86","MIPS","Alpha","PowerPC","","ARM","Itanium","","","x64"]
+```
+
+So as you can see above arch_map seems like an array with a bunch of random values \
+This array actually comes in helpful when returning CPU architecture \
+For some reason WMI when you want the architecture type for the processor it returns some random number and it doesn't even go in order \
+So I just looked up and mapped out what each number mapped out to 
+
+
+Here is the super simple main script 
+
+```
+def main():
+    threading.Thread(target=update, daemon=True).start()
+    print("Welcome to the Hardware Monitor V1 by Oskaras Zincenko")
+    print("Select an option from the menu to begin\n")
+
+    #           -Loop for menu-
+    while running_script:
+        print("\t\t---- MENU ----\n" \
+            "0. Info about project\n" \
+            "1. General Hardware info\n" \
+            "2. CPU info\n" \
+            "3. GPU info\n" \
+            "4. RAM info\n" \
+            "5. Storage info\n" \
+            "6. clear screen\n" \
+            "7. exit\n" \
+            "\t\t--------------")
+
+        user_input = input()
+        direct_user(user_input)
+
+if __name__ == "__main__":
+    main()
+```
+
+Very simple and self explanatory, only reason I include it is to explain a few things \
+The thread we use at the start is to keep values of hardware updated, it itself is also pretty simple \
+Each class has an update function attached to it that just resets and calls WMI again \
+For V2 I think I might ditch that idea, although it probably wont it definitely is not efficient and could maybe do some bottlenecking \
+Or performance spiking at the least \
+The update function just runs infinitely until program closes via daemon 
+
+```
+def update():
+    pythoncom.CoInitialize() 
+    while True:
+        my_cpu.update_values(wmi.WMI().Win32_Processor())
+        my_gpu.update_values(wmi.WMI().Win32_VideoController())
+        my_storage.update_values(wmi.WMI().Win32_DiskDrive(),wmi.WMI().Win32_LogicalDisk())
+        time.sleep(5)
+```
+
+Again pretty simple, Call CoInitialize() so it can actually call and use WMI \
+I do not close it because the only way the loop can stop is through the program terminating so no point really
+
+Many of the display functions in this part of the program follow a very similar method 
+
+```
+def display_ram_info():
+    for x in range(my_ram.amount):
+        print("\t\t--- STICK #" + str(x) + " ---")
+        print("\tCapacity: " + str(my_ram.gb_capacity[x]) + " GB")
+        print("\tManufacturor: " + my_ram.dict["man"][x])
+        print("\tSpeed: " + my_ram.dict["speed"][x] + " MHz")
+        print("\tForm Factor: " + my_ram.dict["formfact"][x])
+        print()
+
+    print("\t\t-- LIVE DISPLAY --")
+    user_stop = threading.Event()
+    temp_live_display = "\tTotal Usage: " + str(psutil.virtual_memory().percent) + "%\n"
+    temp_live_display += "\tSwap usage: " + str(psutil.swap_memory().percent) + "% \n"
+    print(temp_live_display)
+    threading.Thread(target=ram_live_update,args=(user_stop,),daemon=True).start()
+
+    input()
+    user_stop.set()
+    os.system("cls")
+```
+
+Take RAM for example, it has a static section that remains unchanged when called and displays data we can get from the dictionary we set up with all our classes \
+This is the same for the CPU and GPU too and even Storage has its own little version \
+The live display feature now \
+I set up a thread for each of the live displays for all hardware \
+The event is setup so whenever the user wants to move on it will close that thread and clear the console and reprint the menu \
+This is done to keep the console free of clutter \
+I use psutil for the live display as again it is far more efficient than having to update and call WMI over and over 
+
+```
+def ram_live_update(stop):
+    while not stop.is_set():
+        clear_line(3)
+        temp_live_display = "\tTotal Usage: " + str(psutil.virtual_memory().percent) + "%\n"
+        temp_live_display += "\tSwap Usage: " + str(psutil.swap_memory().percent) + "% \n"
+        temp_live_display += "\tPRESS ENTER TO STOP"
+        print(temp_live_display)
+        time.sleep(2)
+```
+
+This is the update function \
+Again pretty much the same thing for GPU and storage \
+Do not need CoInitialize here as no WMI usage \
+But pretty simple exits on any input given by user
+
+```
+def clear_line(amnt):
+    for x in range(0,amnt):
+        print("\033[1A\033[2K", end="")
+```
+
+This I have not really done before but it will move up and clear the line that cursor is on \
+Nothing actually too crazy \
+Didn't want to have to clear and repaste the static and live together just the live part so I made this
+
+One interesting road block that I will further try to tackle in V2, was the lack of info given for the GPU \
+For some reason WMI and psutil do not really have much to give in this field \
+I wanted to do some calculations and figure out what counters windows uses to give out a GPU usage percentage \
+But I couldn't find anything at all, and when you try to call each individual driver through WMI, it will return the messiest clump of different drivers you have ever seen and apparently there is a specific way windows uses counters to calculate the total usage but I was not able to figure it out and implement it here \
+Definitely something to look into further in V2 maybe through an alternative library \
+Did not want to use a whole lot of libraries for this so didn't go about that 
+
+```
+def update_storage(stop):
+    pythoncom.CoInitialize()
+    while not stop.is_set():
+        clear_line((4*len(my_storage.logical_hardware))+1)
+        for i in my_storage.logical_hardware:
+            if not i.DeviceID == None:
+                devid = i.DeviceID
+                psutilcombo = str(devid + "\\")
+                print("\tDrive Letter: " + devid)
+                print("\tCapacity: " + str(round(my_storage.to_gb(psutil.disk_usage(psutilcombo).total),2))+ " GB")
+                print("\tFree Space: " + str(round(my_storage.to_gb(psutil.disk_usage(psutilcombo).free),2)) + " GB")
+                print("\tPercentage: " + str(psutil.disk_usage(psutilcombo).percent) + "%")
+                
+
+        print("\tPRESS ENTER TO STOP")
+        time.sleep(10)
+    pythoncom.CoUninitialize()
+```
+
+Now I want to show this \
+This is the storage update it is slightly different than the rest in that I actually utilize WMI so I will run a CoInit and UnInit to prevent memory leaks \
+I also update this far less frequently as it is not constantly changing like the CPU and RAM \
+Now this is also where I show just how much easier it is to use psutil rather than WMI to grab free space and such \
+I'm sure there might be a few issues with what if the drive has no letter and all that but again just trying things out \
+Here that should not pose a huge issue though and I made sure to catch it just in case \
+The clear line also looks a little messy but this was the formula I figured out through trial and error with the prints 
 
 
 
