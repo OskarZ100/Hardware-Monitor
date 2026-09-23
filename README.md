@@ -549,5 +549,5 @@ And I will also do my best to optimize the program, as in less WMI calls only wh
 I think I will continue the project in python, but there is a slight chance I may consider C++ depending on what advantages it may hold \
 Over all I would consider this project a success as it did what I wanted it to, I learned many different ways to do things and different ways to utilize psutil and WMI \
 Contact : oskaraszincenko500@gmail.com
-<p align="center"><img style="border-radius: 50%;" width="200" height="134" alt="image" src="https://github.com/user-attachments/assets/4c13845f-de59-4698-873b-611cf3d6a326" /></p>
+<p align="center"><img style="border-radius: 50%;" width="200" height="134" alt="image" src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjJtZW83YXFnajE0a3BhaGVrZGtrYzNpbGIxemh1NHc1MHA3ajMzNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/oEu8hTOIU3tsCrYQDN/giphy.gif" /></p>
 
