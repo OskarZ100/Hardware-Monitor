@@ -541,3 +541,13 @@ The clear line also looks a little messy but this was the formula I figured out 
 ---
 
 ## V2 Direction
+
+For V2 as I have said I want to implement a GUI, make it a lot neater and cleaner \
+With V1 I have experimented a lot found a ton of new things I never knew that will 100% help me out \
+I think I will try to find a library in order to complete the GPU information so we can actually have a live display \
+And I will also do my best to optimize the program, as in less WMI calls only when needed and make the main live update calls through psutil \
+I think I will continue the project in python, but there is a slight chance I may consider C++ depending on what advantages it may hold \
+Over all I would consider this project a success as it did what I wanted it to, I learned many different ways to do things and different ways to utilize psutil and WMI \
+Contact : oskaraszincenko500@gmail.com
+<p align="center"><img style="border-radius: 50%;" width="200" height="134" alt="image" src="https://github.com/user-attachments/assets/4c13845f-de59-4698-873b-611cf3d6a326" /></p>
+
